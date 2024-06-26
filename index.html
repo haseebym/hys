@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>واجهة إدخال البيانات</title>
+
+<script src="server.js"></script>
+<script src="Node.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .container {
+            margin-top: 100px;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>إدخال بيانات الموظفين</h1>
+    </header>
+    <div class="container">
+        <form id="dataForm">
+            <label for="email">البريد الإلكتروني:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="firstName">الاسم الأول:</label>
+            <input type="text" id="firstName" name="firstName" required>
+            
+            <label for="lastName">الاسم الأخير:</label>
+            <input type="text" id="lastName" name="lastName" required>
+            
+            <label for="employeecompany">الشركة:</label>
+            <input type="text" id="employeecompany" name="employeecompany" required>
+            
+            <label for="title">الوظيفة:</label>
+            <input type="text" id="title" name="title" required>
+            
+            <label for="country">البلد:</label>
+            <input type="text" id="country" name="country" required>
+            
+            <label for="timestamp">الوقت:</label>
+            <input type="number" id="timestamp" name="timestamp" required>
+            
+            <label for="eventtype">نوع الحدث:</label>
+            <input type="text" id="eventtype" name="eventtype" required>
+            
+            <label for="amount">المبلغ:</label>
+            <input type="number" id="amount" name="amount" required>
+            
+            <label for="currency">العملة:</label>
+            <input type="text" id="currency" name="currency" required>
+            
+            <button type="submit">حفظ البيانات</button>
+        </form>
+        <div id="responseMessage"></div>
+    </div>
+
+    <script>
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // منع الإرسال التقليدي للنموذج
+
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch('/add-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(message => {
+                document.getElementById('responseMessage').innerText = message;
+                event.target.reset(); // إعادة تعيين النموذج بعد الإرسال الناجح
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('responseMessage').innerText = 'Error saving data';
+            });
+        });
+    </script>
+</body>
+</html>
